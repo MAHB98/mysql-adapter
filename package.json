@@ -1,0 +1,33 @@
+{
+  "name": "mysql-adapter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAHB98/mysql-adapter.git"
+  },
+  "keywords": [
+    "nextauth"
+  ],
+  "author": "MAHB98",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MAHB98/mysql-adapter/issues"
+  },
+  "homepage": "https://github.com/MAHB98/mysql-adapter#readme",
+  "dependencies": {
+    "@auth/core": "^0.34.1",
+    "mysql2": "^3.10.2",
+    "tslib": "^2.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9"
+  }
+}

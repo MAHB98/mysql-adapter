@@ -4,9 +4,8 @@ import type {
   VerificationToken,
   AdapterSession,
 } from "@auth/core/adapters";
-import { error } from "console";
 import type { OkPacketParams, Pool } from "mysql2/promise";
-
+// type k = AdapterUser & { password?: string };
 export const mapExpiresAt = (account: any): any => {
   const expires_at: number = parseInt(account.expires_at);
   return {
@@ -35,19 +34,24 @@ const mysqlAdapter = (client: Pool): Adapter => {
       identifier: string;
       token: string;
     }): Promise<VerificationToken | null> {
-      const sql = `delete from verification_token
+      const sql = `select* from verification_token
+      where identifier = ? and token = ?`;
+      const sql1 = `delete from verification_token
       where identifier = ? and token = ?
       `;
 
-      const expires = new Date();
       try {
-        const [result] = (await client.query(sql, [
-          identifier,
-          token,
-        ])) as OkPacketParams[];
-        if (result.affectedRows) {
-          return { expires, identifier, token };
-        } else return null;
+        const [result] = (await client.query(sql, [identifier, token])) as any;
+        if (result[0]) {
+          const [result1] = (await client.query(sql1, [
+            identifier,
+            token,
+          ])) as OkPacketParams[];
+          if (result1.affectedRows) {
+            return result[0];
+          }
+        }
+        return null;
       } catch {
         return null;
       }
@@ -76,7 +80,7 @@ const mysqlAdapter = (client: Pool): Adapter => {
       try {
         const [result] = await client.query(sql, [id]);
         const reResult = result as AdapterUser[];
-        return reResult ? reResult[0] : null;
+        return reResult[0] ? reResult[0] : null;
       } catch (e) {
         return null;
       }
@@ -86,7 +90,7 @@ const mysqlAdapter = (client: Pool): Adapter => {
       const [result] = await client.query(sql, [email]);
       const reResult = result as AdapterUser[];
 
-      return reResult ? reResult[0] : null;
+      return reResult[0] ? reResult[0] : null;
     },
     async getUserByAccount({
       providerAccountId,
@@ -101,7 +105,11 @@ const mysqlAdapter = (client: Pool): Adapter => {
 
       const [result] = await client.query(sql, [provider, providerAccountId]);
       const reResult = result as AdapterUser[];
-      return reResult ? reResult[0] : null;
+      if (reResult[0]) {
+        const { email, emailVerified, id, image, name } = reResult[0];
+        return { name, email, emailVerified, id, image };
+      }
+      return null;
     },
     async updateUser(
       user: Partial<AdapterUser> & Pick<AdapterUser, "id">
@@ -181,7 +189,8 @@ const mysqlAdapter = (client: Pool): Adapter => {
         expires,
         sessionToken,
       ])) as OkPacketParams[];
-      if (result.insertId) return { sessionToken, userId, expires };
+      if (result.insertId)
+        return { id: result.insertId, sessionToken, userId, expires };
       else throw new Error("nothing created ");
     },
 
@@ -257,6 +266,7 @@ const mysqlAdapter = (client: Pool): Adapter => {
       await client.query(`delete from users where id = ?`, [userId]);
       await client.query(`delete from sessions where userId = ?`, [userId]);
       await client.query(`delete from accounts where userId = ?`, [userId]);
+      return null;
     },
   };
 };

@@ -43,17 +43,14 @@ var mysqlAdapter = (client) => {
       }
     },
     async createUser(user) {
-      const { name, email, emailVerified, image } = user;
+      delete user.id;
+      const keys = Object.keys(user);
+      const values = Object.values(user);
       const sql = `
-        INSERT INTO users (name, email, emailVerified, image) 
-        VALUES (?, ?, ?, ?) 
+        INSERT INTO users (${keys}) 
+        VALUES (${keys.map((_ar) => "?")}) 
         `;
-      const [result] = await client.query(sql, [
-        name,
-        email,
-        emailVerified,
-        image
-      ]);
+      const [result] = await client.query(sql, values);
       const [result1] = await client.query("select * from users where id=?", [
         result.insertId
       ]);

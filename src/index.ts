@@ -5,7 +5,7 @@ import type {
   AdapterSession,
 } from "@auth/core/adapters";
 import type { OkPacketParams, Pool } from "mysql2/promise";
-// type k = AdapterUser & { password?: string };
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export const mapExpiresAt = (account: any): any => {
   const expires_at: number = parseInt(account.expires_at);
   return {
@@ -57,18 +57,16 @@ const mysqlAdapter = (client: Pool): Adapter => {
       }
     },
 
-    async createUser(user: Omit<AdapterUser, "id">) {
-      const { name, email, emailVerified, image } = user;
+    async createUser(user: PartialBy<AdapterUser, "id">) {
+      // const { name, email, emailVerified, image } = user;
+      delete user.id;
+      const keys = Object.keys(user);
+      const values = Object.values(user);
       const sql = `
-        INSERT INTO users (name, email, emailVerified, image) 
-        VALUES (?, ?, ?, ?) 
+        INSERT INTO users (${keys}) 
+        VALUES (${keys.map((_ar) => "?")}) 
         `;
-      const [result] = (await client.query(sql, [
-        name,
-        email,
-        emailVerified,
-        image,
-      ])) as OkPacketParams[];
+      const [result] = (await client.query(sql, values)) as OkPacketParams[];
       const [result1] = await client.query("select * from users where id=?", [
         result.insertId,
       ]);

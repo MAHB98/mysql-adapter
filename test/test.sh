@@ -7,8 +7,8 @@ docker run -d --rm\
   -p 3333:3306\
   -v "$(pwd)"/schema.sql:/docker-entrypoint-initdb.d/schema.sql \
   mysql:latest
-echo "waiting 10s for db to start..."
-sleep 20
+echo "waiting 30s for db to start..."
+sleep 30
 # Always stop container, but exit with 1 when tests are failing
 if vitest run -c ./utils/vitest.config.ts; 
 # https://docs.docker.com/

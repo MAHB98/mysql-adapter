@@ -1,5 +1,5 @@
 {
-  "name": "mysql-adapter",
+  "name": "@mahb98/mysql-adapter",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",

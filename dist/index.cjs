@@ -68,9 +68,10 @@ var mysqlAdapter = (client) => {
       }
     },
     async createUser(user) {
-      delete user.id;
-      const keys = Object.keys(user);
-      const values = Object.values(user);
+      const newUser = structuredClone(user);
+      delete newUser.id;
+      const keys = Object.keys(newUser);
+      const values = Object.values(newUser);
       const sql = `
         INSERT INTO users (${keys}) 
         VALUES (${keys.map((_ar) => "?")}) 

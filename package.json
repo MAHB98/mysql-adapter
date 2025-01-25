@@ -1,6 +1,6 @@
 {
   "name": "@mahb98/mysql-adapter",
-  "version": "1.0.0",
+  "version": "0.1.2",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -15,30 +15,22 @@
     "url": "git+https://github.com/MAHB98/mysql-adapter.git"
   },
   "keywords": [
-    "nextauth"
+    "nextauth,auth ,mysql"
   ],
   "author": "MAHB98",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/MAHB98/mysql-adapter/issues"
   },
   "homepage": "https://github.com/MAHB98/mysql-adapter#readme",
   "dependencies": {
-    "@auth/core": "^0.34.1",
-    "@vitest/coverage-v8": "^2.1.1",
-    "tsc": "^2.0.4",
+    "@auth/core": "^0.37.0",
     "tslib": "^2.6.3"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.9.1",
-    "@swc/core": "^1.7.26",
     "@types/node": "^20.16.5",
+    "mysql2": "3.11.2",
     "tsup": "^8.2.4",
-    "typescript": "^5.5.4",
-    "unplugin-swc": "^1.5.1",
-    "vitest": "^2.1.1"
-  },
-  "peerDependencies": {
-    "mysql2": "3.11.2"
+    "typescript": "^5.5.4"
   }
 }

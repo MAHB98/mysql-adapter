@@ -57,11 +57,12 @@ const mysqlAdapter = (client: Pool): Adapter => {
       }
     },
 
-    async createUser(user: PartialBy<AdapterUser, "id">) {
+    async createUser(user: Omit<AdapterUser, "id">) {
       // const { name, email, emailVerified, image } = user;
-      delete user.id;
-      const keys = Object.keys(user);
-      const values = Object.values(user);
+      const newUser: PartialBy<AdapterUser, "id"> = structuredClone(user);
+      delete newUser.id;
+      const keys = Object.keys(newUser);
+      const values = Object.values(newUser);
       const sql = `
         INSERT INTO users (${keys}) 
         VALUES (${keys.map((_ar) => "?")}) 
